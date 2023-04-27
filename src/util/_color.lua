@@ -5,11 +5,11 @@ function color:__tostring()
     return string.format("Color(%d, %d, %d, %d)", self.r, self.g, self.b, self.a)
 end
 
-function color:set()
+function color:Set()
     love.graphics.setColor(self.r, self.g, self.b, self.a)
 end
 
-function color:clone()
+function color:Clone()
     return Color(self.r, self.g, self.b, self.a)
 end
 
