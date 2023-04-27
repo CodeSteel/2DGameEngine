@@ -40,6 +40,5 @@ luac.out
 *.hex
 
 src/build/*
-
-cli/node_modules
+cli/node_modules/
 cli/package-lock.json
