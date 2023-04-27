@@ -1,0 +1,7 @@
+require('util/json')
+require('util/color')
+require('util/config')
+require('game')
+require('objectManager')
+require('gameManager')
+require('object')
