@@ -3,49 +3,66 @@ local GameState = CreateNewState()
 function GameState:Enter()
     print("\n+ Game State Entered!")
 
-    self.player = { x = 100, y = 100, vx = 0, vy = 0 }
+    self.ply = CreateObject(100, 100)
+    self.ply:SetSize(20, 20)
+    self.ply:SetColor(color_green)
+    self.ply:SetStyle(DRAW_STYLE_RECT)
+    self.ply:SetupPhys(1, false, 1)
+    self.ply:Spawn()
+
     self.enemies = {}
-    for i = 1, 10 do
-        table.insert(self.enemies, { x = math.random(0, 800), y = math.random(0, 600), vx = 0, vy = 0 })
+    for i = 1, 20 do
+        local enemy = CreateObject(math.random(0, GameManager.CurrentGame.WindowWidth),
+            math.random(0, GameManager.CurrentGame.WindowHeight))
+        enemy:SetSize(10, 10)
+        enemy:SetColor(color_red)
+        enemy:SetStyle(DRAW_STYLE_RECT)
+        enemy:SetupPhys(1, false, 1)
+        function enemy.OnCollision(other)
+            if other.index == self.ply.index then
+                print("Touch Player")
+                enemy:Destroy()
+            end
+        end
+
+        enemy:Spawn()
+
+        table.insert(self.enemies, enemy)
     end
 end
 
 function GameState:Update()
-    local dt = Game.FrameTime
+    local dt = Time.DeltaTime
 
-    if love.keyboard.isDown("up") then
-        self.player.vy = self.player.vy - 100 * dt * 2
-    elseif love.keyboard.isDown("down") then
-        self.player.vy = self.player.vy + 100 * dt * 2
-    end
-    if love.keyboard.isDown("left") then
-        self.player.vx = self.player.vx - 100 * dt * 2
-    elseif love.keyboard.isDown("right") then
-        self.player.vx = self.player.vx + 100 * dt * 2
-    end
+    -- get veclocity
+    local speed = 300 * 10
+    local inputDir = Input.GetAxis()
+    local wishDir = Vector(0, 0)
 
+    wishDir = inputDir * speed * dt
+
+    -- add friction
+    self.ply.vX = self.ply.vX * (1 - math.min(dt * 4, 1))
+    self.ply.vY = self.ply.vY * (1 - math.min(dt * 4, 1))
+
+    -- move enemies
     for _, enemy in ipairs(self.enemies) do
-        enemy.vx = math.random(-50, 50)
-        enemy.vy = math.random(-50, 50)
-        enemy.x = enemy.x + enemy.vx * dt
-        enemy.y = enemy.y + enemy.vy * dt
+        enemy:ApplyForce(math.random(-10, 10), math.random(-10, 10))
+
+        enemy.x = math.Clamp(enemy.x, 0, GameManager.CurrentGame.WindowWidth - enemy.w)
+        enemy.y = math.Clamp(enemy.y, 0, GameManager.CurrentGame.WindowHeight - enemy.h)
     end
 
-    self.player.x = self.player.x + self.player.vx * dt * 10
-    self.player.y = self.player.y + self.player.vy * dt * 10
+    -- add player's velocity
+    self.ply:ApplyForce(wishDir.x, wishDir.y)
 
-    self.player.x = math.max(0, math.min(love.graphics.getWidth(), self.player.x))
-    self.player.y = math.max(0, math.min(love.graphics.getHeight(), self.player.y))
+    -- clamp player position to window
+    self.ply.x = math.Clamp(self.ply.x, 0, GameManager.CurrentGame.WindowWidth - self.ply.w)
+    self.ply.y = math.Clamp(self.ply.y, 0, GameManager.CurrentGame.WindowHeight - self.ply.h)
 end
 
 function GameState:Draw()
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.circle("fill", self.player.x, self.player.y, 20)
 
-    love.graphics.setColor(1, 0, 0)
-    for _, enemy in ipairs(self.enemies) do
-        love.graphics.circle("fill", enemy.x, enemy.y, 10)
-    end
 end
 
 local MenuState = CreateNewState()
@@ -62,13 +79,13 @@ function MenuState:Enter()
 end
 
 function MenuState:Update()
-    if love.keyboard.isDown("up") then
+    if Input.GetKey("up") then
         self.currentSelection = math.max(self.currentSelection - 1, 1)
-    elseif love.keyboard.isDown("down") then
+    elseif Input.GetKey("down") then
         self.currentSelection = math.min(self.currentSelection + 1, #self.menu)
     end
 
-    if love.keyboard.isDown("return") then
+    if Input.GetKey("return") then
         self.menu[self.currentSelection].action()
     end
 end

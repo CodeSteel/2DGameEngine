@@ -2,7 +2,13 @@ local ObjectManager = {}
 ObjectManager.Objects = {}
 
 function ObjectManager.Register(object)
-    table.insert(ObjectManager.Objects, object)
+    local index = #ObjectManager.Objects + 1
+    object.index = index
+    ObjectManager.Objects[index] = object
+end
+
+function ObjectManager.Unregister(object)
+    ObjectManager.Objects[object.index] = nil
 end
 
 function ObjectManager.Update()
