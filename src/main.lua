@@ -21,6 +21,7 @@ function love.load()
 
     love.window.setMode(Config.Get("window-width"), Config.Get("window-height"), options)
 
+    Game.StateMachine = CreateStateMachine()
     Game.Start()
     GameManager.Load()
 end
@@ -30,9 +31,11 @@ function love.update(dt)
     Game.Update()
     GameManager.Update()
     ObjectManager.Update()
+    Game.StateMachine:Update()
 end
 
 function love.draw()
     Game.Draw()
     ObjectManager.Draw()
+    Game.StateMachine:Draw()
 end

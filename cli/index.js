@@ -47,6 +47,7 @@ const buildProgram = program
   .command("build")
   .description("Builds a project directory.")
   .argument("<path>", "Path to the project directory")
+  .option("-c --console", "Runs the game in console mode")
   .action((string, options) => {
     log("Building project...");
 
@@ -59,7 +60,13 @@ const buildProgram = program
 
     copyDirectory(gamemodePath, buildPath);
 
-    const loveProcess = spawn(lovePath, [enginePath]);
+    const arguments = [enginePath];
+
+    if (options.console) {
+      arguments.push("--console");
+    }
+
+    const loveProcess = spawn(lovePath, arguments);
 
     loveProcess.on("error", (err) => {
       console.error(`Failed to start Love2D: ${err}`);
