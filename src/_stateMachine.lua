@@ -1,8 +1,3 @@
-_G.GameStateType = {
-    MENU = "menu",
-    GAME = "game"
-}
-
 local stateMachine = {}
 stateMachine.__index = stateMachine
 

@@ -9,9 +9,24 @@ function GameManager.Load()
     if gamemode then
         GameManager.CurrentGame = gamemode
         love.window.setTitle(gamemode.Name)
-        GameManager.CurrentGame.Load()
 
-        print("\n+ Gamemode set to '" .. gamemode.Name .. "'")
+        local options = {}
+
+        if (gamemode.WindowFullscreen) then
+            options.fullscreen = true
+        end
+
+        if (gamemode.WindowResizable) then
+            options.resizable = true
+        end
+
+        if (gamemode.VsyncEnabled) then
+            options.vsync = true
+        end
+
+        love.window.setMode(gamemode.WindowWidth or 1200, gamemode.WindowHeight or 720, options)
+
+        GameManager.CurrentGame.Load()
     else
         print("\n- Gamemode not found!")
     end

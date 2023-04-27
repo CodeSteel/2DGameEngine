@@ -1,6 +1,5 @@
 require('util/_json')
 require('util/_color')
-require('util/_config')
 require('_game')
 require('_objectManager')
 require('_gameManager')

@@ -1,48 +1,3 @@
-local MenuState = CreateNewState()
-
-function MenuState:Enter()
-    print("\n+ Menu State Entered!")
-
-    self.menu = {
-        { label = "Play", action = function() Game.StateMachine:Change(GameState) end },
-        { label = "Quit", action = function() love.event.quit() end }
-    }
-
-    self.currentSelection = 1
-end
-
-function MenuState:Update()
-    if love.keyboard.isDown("up") then
-        self.currentSelection = math.max(self.currentSelection - 1, 1)
-    elseif love.keyboard.isDown("down") then
-        self.currentSelection = math.min(self.currentSelection + 1, #self.menu)
-    end
-
-    if love.keyboard.isDown("return") then
-        self.menu[self.currentSelection].action()
-    end
-end
-
-function MenuState:Draw()
-    color_green:set()
-
-    love.graphics.print(Gamemode.Name, 100, 100)
-
-    for i, item in ipairs(self.menu) do
-        local x = 100
-        local y = 150 + (i - 1) * 50
-
-        if i == self.currentSelection then
-            color_red:set()
-        else
-            color_white:set()
-        end
-        love.graphics.print(item.label, x, y)
-    end
-end
-
-_G.MenuState = MenuState
-
 local GameState = CreateNewState()
 
 function GameState:Enter()
@@ -94,3 +49,48 @@ function GameState:Draw()
 end
 
 _G.GameState = GameState
+
+local MenuState = CreateNewState()
+
+function MenuState:Enter()
+    print("\n+ Menu State Entered!")
+
+    self.menu = {
+        { label = "Play", action = function() Game.StateMachine:Change(GameState) end },
+        { label = "Quit", action = function() love.event.quit() end }
+    }
+
+    self.currentSelection = 1
+end
+
+function MenuState:Update()
+    if love.keyboard.isDown("up") then
+        self.currentSelection = math.max(self.currentSelection - 1, 1)
+    elseif love.keyboard.isDown("down") then
+        self.currentSelection = math.min(self.currentSelection + 1, #self.menu)
+    end
+
+    if love.keyboard.isDown("return") then
+        self.menu[self.currentSelection].action()
+    end
+end
+
+function MenuState:Draw()
+    color_green:Set()
+
+    love.graphics.print(Gamemode.Name, 100, 100)
+
+    for i, item in ipairs(self.menu) do
+        local x = 100
+        local y = 150 + (i - 1) * 50
+
+        if i == self.currentSelection then
+            color_red:Set()
+        else
+            color_white:Set()
+        end
+        love.graphics.print(item.label, x, y)
+    end
+end
+
+_G.MenuState = MenuState
