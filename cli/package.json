@@ -1,0 +1,19 @@
+{
+  "name": "@steelio/steelengine-cli",
+  "version": "1.0.0",
+  "author": "Isaac Holloway",
+  "homepage": "https://github.com/CodeSteel/SteelEngine",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "child_process": "^1.0.2",
+    "commander": "^10.0.1"
+  },
+  "bin": {
+    "steelengine": "./index.js"
+  },
+  "scripts": {
+    "steelengine": "node index.js"
+  },
+  "module": "index.js"
+}

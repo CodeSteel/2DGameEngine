@@ -19,7 +19,6 @@ function love.load()
         options.vsync = true
     end
 
-    love.window.setTitle(Config.Get("gamemode"))
     love.window.setMode(Config.Get("window-width"), Config.Get("window-height"), options)
 
     Game.Start()
