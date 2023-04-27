@@ -48,8 +48,6 @@ function GameState:Draw()
     end
 end
 
-_G.GameState = GameState
-
 local MenuState = CreateNewState()
 
 function MenuState:Enter()
@@ -93,4 +91,4 @@ function MenuState:Draw()
     end
 end
 
-_G.MenuState = MenuState
+return MenuState

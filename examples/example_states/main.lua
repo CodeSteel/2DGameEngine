@@ -4,10 +4,10 @@ Gamemode.WindowWidth = 1250
 Gamemode.WindowHeight = 720
 Gamemode.WindowResizable = true
 
-require('states')
+local menuState = require('states')
 
 function Gamemode.Load()
-    Game.StateMachine:Push(MenuState)
+    Game.StateMachine:Push(menuState)
 end
 
 function Gamemode.Update()
