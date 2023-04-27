@@ -13,5 +13,4 @@ end
 function Gamemode.Update()
 end
 
-_G.Gamemode = Gamemode
 return Gamemode

@@ -78,7 +78,7 @@ end
 function MenuState:Draw()
     color_green:Set()
 
-    love.graphics.print(Gamemode.Name, 100, 100)
+    love.graphics.print(GameManager.CurrentGame.Name, 100, 100)
 
     for i, item in ipairs(self.menu) do
         local x = 100
