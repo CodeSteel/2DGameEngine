@@ -1,4 +1,4 @@
-require('modules')
+require('_modules')
 
 _G.love = love
 
