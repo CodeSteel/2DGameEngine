@@ -14,6 +14,10 @@ function love.load()
     Font.CreateFont("UIMediumB", "assets/fonts/SourceSansPro-Bold.ttf", 24)
     Font.CreateFont("UISmallB", "assets/fonts/SourceSansPro-Bold.ttf", 18)
 
+    Game.SoundLibrary = CreateSoundLibrary()
+    Sound.Create("MenuMusic", "assets/sounds/menu_music.mp3")
+    Sound.Create("GameMusic", "assets/sounds/game_music.mp3")
+
     Game.StateMachine = CreateStateMachine()
     Game.InputManager = CreateInputManager()
     Game.Start()

@@ -30,6 +30,11 @@ function GameState:Enter()
 
         table.insert(self.enemies, enemy)
     end
+
+    self.Music = Sound.GetSound("GameMusic")
+    self.Music:SetLooping(true)
+    self.Music:SetVolume(0.01)
+    self.Music:Play()
 end
 
 function GameState:Update()
@@ -77,6 +82,8 @@ function GameState:Draw()
 end
 
 function GameState:Exit()
+    self.Music:Stop()
+
     if (IsValid(self.ply)) then
         self.ply:Destroy()
     end

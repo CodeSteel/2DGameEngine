@@ -8,7 +8,16 @@ function MenuState:Enter()
         { label = "Quit", action = function() love.event.quit() end }
     }
 
+    self.Music = Sound.Create("MenuMusic", "assets/sounds/menu_music.mp3")
+    self.Music:SetLooping(true)
+    self.Music:SetVolume(0.01)
+    self.Music:Play()
+
     self.currentSelection = 1
+end
+
+function MenuState:Exit()
+    self.Music:Stop()
 end
 
 function MenuState:Update()

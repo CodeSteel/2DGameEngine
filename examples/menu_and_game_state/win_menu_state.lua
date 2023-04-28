@@ -15,7 +15,16 @@ function WinState:Enter()
         { label = "Quit", action = function() love.event.quit() end }
     }
 
+    self.Music = Sound.GetSound("MenuMusic")
+    self.Music:SetLooping(true)
+    self.Music:SetVolume(0.01)
+    self.Music:Play()
+
     self.currentSelection = 1
+end
+
+function WinState:Exit()
+    self.Music:Stop()
 end
 
 function WinState:Update()
