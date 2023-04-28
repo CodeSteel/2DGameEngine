@@ -11,11 +11,17 @@ function love.load()
     GameManager.Load()
 end
 
+-- 1. Update Time
+-- 2. Update BaseGame
+-- 3. Update GameManager (CurrentGame)
+-- 4. Update Input
+-- 5. Update ObjectManager (Objects)
+-- 6. Update StateMachine (CurrentState)
 function love.update(dt)
     Time.Update()
-    Game.InputManager:Update()
     Game.Update()
     GameManager.Update()
+    Game.InputManager:Update()
     ObjectManager.Update()
     Game.StateMachine:Update()
 end
@@ -26,6 +32,22 @@ end
 
 function love.keyreleased(key, unicode)
     Game.InputManager:KeyReleased(key, unicode)
+end
+
+function love.mousemoved(x, y, dx, dy, isTouch)
+    Game.InputManager:MouseMoved(x, y, dx, dy, isTouch)
+end
+
+function love.mousepressed(x, y, button, isTouch, presses)
+    Game.InputManager:MousePressed(x, y, button, isTouch, presses)
+end
+
+function love.mousereleased(x, y, button, isTouch, presses)
+    Game.InputManager:MouseReleased(x, y, button, isTouch, presses)
+end
+
+function love.wheelmoved(x, y)
+    Game.InputManager:WheelMoved(x, y)
 end
 
 function love.draw()

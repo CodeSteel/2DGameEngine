@@ -11,10 +11,10 @@ function Time.Update()
     Time.AverageDeltaTime = love.timer.getAverageDelta()
     Time.FPS = love.timer.getFPS()
 
-    for i = 1, #Time.timers do
-        local timer = Time.timers[i]
+    for k, v in pairs(Time.timers) do
+        local timer = v
         if not timer or timer.finished then
-            table.remove(Time.timers, i)
+            Time.RemoveTimer(k)
             break
         end
         timer:Update()
@@ -22,17 +22,11 @@ function Time.Update()
 end
 
 function Time.AddTimer(timerObject)
-    table.insert(Time.timers, timerObject)
+    Time.timers[timerObject.identifier] = timerObject
 end
 
 function Time.RemoveTimer(identifier)
-    for i = 1, #Time.timers do
-        local timer = Time.timers[i]
-        if timer.identifier == identifier then
-            table.remove(Time.timers, i)
-            break
-        end
-    end
+    Time.timers[identifier] = nil
 end
 
 _G.Time = Time
@@ -85,4 +79,14 @@ end
 
 function _G.TimerRemove(identifier)
     Time.RemoveTimer(identifier)
+end
+
+function _G.TimerExists(identifier)
+    for i = 1, #Time.timers do
+        local timer = Time.timers[i]
+        if timer.identifier == identifier then
+            return true
+        end
+    end
+    return false
 end

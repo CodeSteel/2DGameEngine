@@ -1,5 +1,5 @@
 local Gamemode = {}
-Gamemode.Name = "Call of Duty 4: Modern Warfare"
+Gamemode.Name = "Example: Menu and Game State"
 Gamemode.WindowWidth = 1250
 Gamemode.WindowHeight = 720
 Gamemode.WindowResizable = true

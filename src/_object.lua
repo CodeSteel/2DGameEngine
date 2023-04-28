@@ -102,12 +102,12 @@ function Object:Destroy()
 end
 
 -- Create a new Object and register it to the ObjectManager
-function _G.CreateObject(x, y, isStatic)
+function _G.CreateObject(position, isStatic)
     local object = {}
     setmetatable(object, Object)
 
-    object.x = x
-    object.y = y
+    object.x = position.x
+    object.y = position.y
     object.vX = 0
     object.vY = 0
     object.rotation = 0

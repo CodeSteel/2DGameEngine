@@ -47,12 +47,12 @@ end
 
 -- Mouse Functions
 
-function Input.GetMouseButtonDown()
-
+function Input.GetMouseButtonDown(btn)
+    return Game.InputManager:GetMouseButtonDown(btn)
 end
 
-function Input.GetMouseButton()
-
+function Input.GetMouseButton(btn)
+    return Game.InputManager:GetMouseButton(btn)
 end
 
 _G.Input = Input

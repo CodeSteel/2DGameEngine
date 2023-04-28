@@ -36,8 +36,12 @@ function vector:__len()
     return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
 end
 
+function vector:length()
+    return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+end
+
 function vector:normalized()
-    local len = #self
+    local len = self:length()
     return _G.Vector(self.x / len, self.y / len, self.z / len)
 end
 

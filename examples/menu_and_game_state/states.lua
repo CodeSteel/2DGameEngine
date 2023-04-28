@@ -3,7 +3,7 @@ local GameState = CreateNewState()
 function GameState:Enter()
     print("\n+ Game State Entered!")
 
-    self.ply = CreateObject(100, 100)
+    self.ply = CreateObject(Vector(100, 100))
     self.ply:SetSize(20, 20)
     self.ply:SetColor(color_green)
     self.ply:SetStyle(DRAW_STYLE_RECT)
@@ -12,15 +12,14 @@ function GameState:Enter()
 
     self.enemies = {}
     for i = 1, 20 do
-        local enemy = CreateObject(math.random(0, GameManager.CurrentGame.WindowWidth),
-            math.random(0, GameManager.CurrentGame.WindowHeight))
+        local enemy = CreateObject(Vector(math.random(0, GameManager.CurrentGame.WindowWidth),
+            math.random(0, GameManager.CurrentGame.WindowHeight)))
         enemy:SetSize(10, 10)
         enemy:SetColor(color_red)
         enemy:SetStyle(DRAW_STYLE_RECT)
         enemy:SetupPhys(1, false, 1)
         function enemy.OnCollision(other)
             if other.index == self.ply.index then
-                print("Touch Player")
                 enemy:Destroy()
             end
         end

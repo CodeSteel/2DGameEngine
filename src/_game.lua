@@ -3,6 +3,10 @@ local Game = {}
 function Game.Start()
     Game.World = love.physics.newWorld(0, 9.81 * 40, true)
     Game.World:setCallbacks(Game.BeginContact, Game.EndContact, Game.PreSolve, Game.PostSolve)
+
+    local defaultIcon = love.image.newImageData("assets/icon.png")
+    love.window.setTitle("SteelEngine")
+    love.window.setIcon(defaultIcon)
 end
 
 function Game.Update()

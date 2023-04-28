@@ -1,11 +1,11 @@
 local Gamemode = {}
-Gamemode.Name = "Call of Duty 4: Modern Warfare"
+Gamemode.Name = "Example: Getting Started"
 Gamemode.WindowWidth = 1250
 Gamemode.WindowHeight = 720
 Gamemode.WindowResizable = true
 
 function Gamemode.Load()
-    Gamemode.ply = CreateObject(100, 100)
+    Gamemode.ply = CreateObject(Vector(100, 100))
     Gamemode.ply:SetSize(20, 20)
     Gamemode.ply:SetColor(color_green)
     Gamemode.ply:SetStyle(DRAW_STYLE_RECT)
@@ -14,6 +14,34 @@ function Gamemode.Load()
 end
 
 function Gamemode.Update()
+    if (Input.GetMouseButtonDown(1)) then
+        -- get mouse position
+        local mouseX, mouseY = love.mouse.getPosition()
+        local mousePos = Vector(mouseX, mouseY)
+        local plyPos = Vector(Gamemode.ply.x, Gamemode.ply.y)
+
+        -- get direction
+        local dir = mousePos - plyPos
+        dir = dir:normalized()
+
+        local bulletSpawnPosition = plyPos + dir * 20
+
+        -- spawn bullet
+        local bullet = CreateObject(bulletSpawnPosition)
+        bullet:SetSize(10, 10)
+        bullet:SetColor(color_red)
+        bullet:SetStyle(DRAW_STYLE_CIRCLE)
+        bullet:SetupPhys(100, false, 1)
+        bullet:Spawn()
+
+
+
+
+
+        -- apply force
+        bullet:ApplyForce(dir.x * 100, dir.y * 100)
+    end
+
     local dt = Time.DeltaTime
 
     -- get veclocity
