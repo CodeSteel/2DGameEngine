@@ -10,24 +10,23 @@ const fs = require("fs");
 const log = (log) => console.log(`${chalk.red("[SteelEngine]")} ${log}`);
 
 const copyDirectory = (src, dest) => {
-  // Create the destination directory if it doesn't exist
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest);
   }
 
-  // Get the list of files and directories in the source directory
   const files = fs.readdirSync(src);
 
-  // Copy each file or directory recursively
   for (const file of files) {
     const srcPath = path.join(src, file);
     const destPath = path.join(dest, file);
 
+    if (file == "assets") {
+      continue;
+    }
+
     if (fs.statSync(srcPath).isDirectory()) {
-      // Recursively copy directories
       copyDirectory(srcPath, destPath);
     } else {
-      // Copy files
       fs.copyFileSync(srcPath, destPath);
     }
   }
@@ -52,26 +51,42 @@ const buildProgram = program
     let lovePath;
     let enginePath;
     let buildPath;
+    let assetsPath;
 
     if (process.env.NODE_ENV === "production") {
       lovePath = "C:\\Program Files\\LOVE\\love.exe";
       enginePath = "C:\\Program Files\\steelengine-1.0";
-      buildPath = "C:\\Program Files\\steelengine-1.0\\build";
+      buildPath = enginePath + "\\build";
+      assetsPath = enginePath + "\\assets";
     } else {
       lovePath = "C:\\Program Files\\LOVE\\love.exe";
       enginePath = "F:\\Projects\\Love2D\\2DGameEngine\\src";
-      buildPath = "F:\\Projects\\Love2D\\2DGameEngine\\src\\build";
+      buildPath = enginePath + "\\build";
+      assetsPath = enginePath + "\\assets";
     }
 
     const gamemodePath = path.resolve(string);
 
-    // clear directory first
+    // clear build directory
     if (fs.existsSync(buildPath)) {
       fs.rmdirSync(buildPath, { recursive: true });
     }
 
+    // clear assets directory
+    if (fs.existsSync(assetsPath)) {
+      fs.rmdirSync(assetsPath, { recursive: true });
+    }
+
+    // copy files
     copyDirectory(gamemodePath, buildPath);
 
+    let gamemodeAssets = path.join(gamemodePath, "assets");
+
+    if (fs.existsSync(gamemodeAssets)) {
+      copyDirectory(gamemodeAssets, assetsPath);
+    }
+
+    // start love process
     const arguments = [enginePath];
 
     if (options.console) {

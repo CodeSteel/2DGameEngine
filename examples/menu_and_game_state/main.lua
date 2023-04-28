@@ -5,12 +5,15 @@ Gamemode.WindowHeight = 720
 Gamemode.WindowResizable = true
 Gamemode.BackgroundColor = color_black
 
-
 Gamemode.EnemyCount = 5
 Gamemode.Score = 0
 Gamemode.TimeElapsed = 0
 Gamemode.Finished = false
 Gamemode.TimeStart = 0
+
+Sound.Create("MenuMusic", "assets/sounds/menu_music.mp3")
+Sound.Create("GameMusic", "assets/sounds/game_music.mp3")
+Sound.Create("Bing", "assets/sounds/bing.mp3")
 
 function Gamemode.Load()
     Game.StateMachine:Push(require('menu_state'))

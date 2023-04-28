@@ -9,8 +9,8 @@ function Gamemode.Load()
     Gamemode.ply = CreateObject(Vector(100, 100))
     Gamemode.ply:SetSize(50, 20)
     Gamemode.ply:SetColor(color_white)
-    Gamemode.ply:SetTexture(CreateTexture("assets/icon.png"))
-    Gamemode.ply:SetupPhys(1, false, 1)
+    Gamemode.ply:SetTexture(CreateTexture("engineassets/icon.png"))
+    Gamemode.ply:SetupPhysics(0, 1)
     Gamemode.ply:Spawn()
     Gamemode.ply.body:setFixedRotation(true)
 end
@@ -33,12 +33,12 @@ function Gamemode.Update()
         bullet:SetSize(10, 10)
         bullet:SetColor(color_blue)
         bullet:SetStyle(DRAW_STYLE_CIRCLE)
-        bullet:SetupPhys(100, false, 1)
+        bullet:SetupPhysics(0, 1)
         bullet:SetRemoveOnLeaveScreen(true)
         bullet:Spawn()
 
         -- apply force
-        bullet:ApplyForce(dir.x * 100, dir.y * 100)
+        bullet:ApplyForce(Vector(dir.x * 100, dir.y * 100))
 
         TimerCreate("bullet_" .. bullet.index, 3, 1, function()
             if (not IsValid(bullet)) then return end
@@ -56,11 +56,11 @@ function Gamemode.Update()
     wishDir = inputDir * speed * dt
 
     -- add friction
-    Gamemode.ply.vX = Gamemode.ply.vX * (1 - math.min(dt * 4, 1))
-    Gamemode.ply.vY = Gamemode.ply.vY * (1 - math.min(dt * 4, 1))
+    wishDir.x = wishDir.x * (1 - math.min(dt * 4, 1))
+    wishDir.y = wishDir.y * (1 - math.min(dt * 4, 1))
 
     -- add player's velocity
-    Gamemode.ply:ApplyForce(wishDir.x, wishDir.y)
+    Gamemode.ply:ApplyForce(Vector(wishDir.x, wishDir.y))
 
     -- clamp player position to window
     Gamemode.ply.x = math.Clamp(Gamemode.ply.x, 0, ScrW() - Gamemode.ply.w)

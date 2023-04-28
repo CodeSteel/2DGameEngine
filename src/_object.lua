@@ -5,9 +5,40 @@ function Object:_eq(other)
     return self.index == other.index
 end
 
-function Object:ApplyForce(x, y)
-    self.vX = self.vX + x
-    self.vY = self.vY + y
+function Object:ApplyForce(dir)
+    self.body:applyForce(dir.x, dir.y)
+end
+
+function Object:ApplyImpulse(dir)
+    self.body:applyImpulse(dir.x, dir.y)
+end
+
+function Object:ApplyTorque(torque)
+    self.body:applyTorque(torque)
+end
+
+function Object:ApplyAngularImpulse(impulse)
+    self.body:applyAngularImpulse(impulse)
+end
+
+function Object:ApplyLinearImpulse(dir)
+    self.body:applyLinearImpulse(dir.x, dir.y)
+end
+
+function Object:SetPosition(position)
+    self.body:setPosition(position.x, position.y)
+end
+
+function Object:GetPosition()
+    return Vector(self.x, self.y)
+end
+
+function Object:GetVelocity()
+    return Vector(self.body:getLinearVelocity())
+end
+
+function Object:UseGravity(use)
+    self.body:setGravityScale(use and 1 or 0)
 end
 
 function Object:SetColor(color)
@@ -40,42 +71,37 @@ function Object:SetRemoveOnLeaveScreen(remove)
     self.removeOnLeaveScreen = remove
 end
 
-function Object:SetupPhys(mass, useGravity, colCategory, ignoreMask)
-    colCategory = colCategory or 1
-    useGravity = useGravity or false
+function Object:SetContinuousCollision(continuous)
+    self.body:setBullet(continuous)
+end
+
+function Object:SetupPhysics(mass, category, mask)
+    category = category or 1
+    mask = mask or 1
     mass = mass or 1
 
     self.mass = mass
-    self.useGravity = useGravity
 
-    self.body = love.physics.newBody(Game.World, self.x, self.y, self.isStatic and "static" or "dynamic")
-    self.shape = love.physics.newRectangleShape(self.w, self.h)
-    self.fixture = love.physics.newFixture(self.body, self.shape)
-    self.fixture:setUserData(self)
+
+    self.body = love.physics.newBody(Game.World, self.x, self.y, self.type)
     self.body:setMass(mass)
-
-    self.fixture:setCategory(colCategory)
-    if ignoreMask then
-        self.fixture:setMask(ignoreMask)
-    end
+    self.shape = love.physics.newRectangleShape(self.w, self.h, self.w, self.h)
+    self.fixture = love.physics.newFixture(self.body, self.shape)
+    self.fixture:setCategory(category)
+    -- self.fixture:setMask(mask)
+    self.fixture:setUserData(self)
 end
 
 function Object:Update()
     if not self.Active or not self.Spawned then return end
 
     -- update position to physics body
-    self.body:setPosition(self.x + self.vX * Time.DeltaTime, self.y + self.vY * Time.DeltaTime)
     self.x, self.y = self.body:getPosition()
-
-    -- gravity
-    if not self.isStatic and self.useGravity then
-        local gravityY = 9.81 * self.mass
-        self:ApplyForce(0, gravityY)
-    end
+    self.rotation = self.body:getAngle()
 
     -- destroy if off screen
     if (self.removeOnLeaveScreen) then
-        if (self.x < 0 or self.x > ScrW() or self.y < 0 or self.y > ScrH()) then
+        if (not Util.IsOnScreen(self)) then
             self:Destroy()
         end
     end
@@ -90,12 +116,13 @@ function Object:Draw()
     if not self.Active or not self.Spawned then return end
 
     self.color:Set()
+
     if self.texture then
-        love.graphics.draw(self.texture, self.quad, self.x, self.y, self.rotation, 1, 1)
+        love.graphics.draw(self.texture, self.quad, self.x, self.x, self.rotation, 1, 1)
     else
         love.graphics.push()
 
-        love.graphics.translate(self.x, self.y)
+        love.graphics.translate(self.x + self.w / 2, self.y + self.h / 2)
         love.graphics.rotate(self.body:getAngle())
 
         if (self.style == DRAW_STYLE_CIRCLE) then
@@ -105,6 +132,15 @@ function Object:Draw()
                 self.h)
         else
             love.graphics.rectangle(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w, self.h)
+
+            -- debugging
+            if (Game.Debugging) then
+                love.graphics.setColor(1, 0, 0)
+                love.graphics.polygon("line", self.shape:getPoints())
+
+                love.graphics.setColor(0, 1, 0)
+                love.graphics.circle("fill", 0, 0, 2)
+            end
         end
 
         love.graphics.pop()
@@ -124,22 +160,29 @@ function Object:Destroy()
     self.Spawned = false
     self.Active = false
 
+    if self.body then
+        self.body:destroy()
+    end
+
+    if self.OnDestroy then
+        self:OnDestroy()
+    end
+
     ObjectManager.Unregister(self)
 end
 
 -- Create a new Object and register it to the ObjectManager
-function _G.CreateObject(position, isStatic)
+function _G.CreateObject(position, type)
     local object = {}
     setmetatable(object, Object)
 
     object.x = position.x
     object.y = position.y
-    object.vX = 0
-    object.vY = 0
     object.rotation = 0
-    object.isStatic = isStatic
+    object.type = type or 'dynamic'
     object.fillmode = DRAW_FILLMODE_FILL
     object.style = DRAW_STYLE_RECT
+    object.removeOnLeaveScreen = false
 
     ObjectManager.Register(object)
 

@@ -1,14 +1,6 @@
 local stateMachine = {}
 stateMachine.__index = stateMachine
 
-function _G.CreateStateMachine()
-    local _stateMachine = {
-        stack = {}
-    }
-    setmetatable(_stateMachine, stateMachine)
-    return _stateMachine
-end
-
 function stateMachine:Push(state)
     table.insert(self.stack, state)
     state:Enter()
@@ -35,4 +27,12 @@ function stateMachine:Draw()
     local currentState = self.stack[#self.stack]
     if not currentState then return end
     currentState:Draw()
+end
+
+function _G.CreateStateMachine()
+    local _stateMachine = {
+        stack = {}
+    }
+    setmetatable(_stateMachine, stateMachine)
+    return _stateMachine
 end

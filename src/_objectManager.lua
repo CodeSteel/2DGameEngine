@@ -16,7 +16,6 @@ end
 function ObjectManager.ClearWorld()
     for i, object in pairs(ObjectManager.Objects) do
         object:Destroy()
-        print("destroyed")
     end
 end
 
