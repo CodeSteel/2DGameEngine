@@ -29,6 +29,10 @@ function Time.RemoveTimer(identifier)
     Time.timers[identifier] = nil
 end
 
+function _G.CurTime()
+    return love.timer.getTime()
+end
+
 _G.Time = Time
 
 local timer = {}

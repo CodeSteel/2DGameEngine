@@ -6,7 +6,7 @@ function color:__tostring()
 end
 
 function color:Set()
-    love.graphics.setColor(self.r, self.g, self.b, self.a)
+    love.graphics.setColor(self.r / 255, self.g / 255, self.b / 255, self.a / 255)
 end
 
 function color:Clone()

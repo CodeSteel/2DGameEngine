@@ -13,6 +13,13 @@ function ObjectManager.Unregister(object)
     ObjectManager.Objects[object.index] = nil
 end
 
+function ObjectManager.ClearWorld()
+    for i, object in pairs(ObjectManager.Objects) do
+        object:Destroy()
+        print("destroyed")
+    end
+end
+
 function ObjectManager.Update()
     for i, object in pairs(ObjectManager.Objects) do
         object:Update()

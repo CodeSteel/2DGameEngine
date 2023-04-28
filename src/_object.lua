@@ -1,6 +1,10 @@
 local Object = {}
 Object.__index = Object
 
+function Object:_eq(other)
+    return self.index == other.index
+end
+
 function Object:ApplyForce(x, y)
     self.vX = self.vX + x
     self.vY = self.vY + y

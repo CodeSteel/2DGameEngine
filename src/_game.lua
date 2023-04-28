@@ -24,11 +24,13 @@ function Game.BeginContact(a, b, coll)
     local objA = a:getUserData()
     local objB = b:getUserData()
 
-    if objA and objA.OnCollision and objB then
+    if (not objA) or (not objB) then return end
+
+    if objA.OnCollision then
         objA:OnCollision(objB)
     end
 
-    if objB and objB.OnCollision and objA then
+    if objB.OnCollision then
         objB:OnCollision(objA)
     end
 end

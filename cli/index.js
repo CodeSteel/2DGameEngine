@@ -47,7 +47,7 @@ const buildProgram = program
   .argument("<path>", "Path to the project directory")
   .option("-c --console", "Runs the game in console mode")
   .action((string, options) => {
-    log("Building project...");
+    log("🚀 Building project!");
 
     let lovePath;
     let enginePath;
@@ -81,11 +81,15 @@ const buildProgram = program
     const loveProcess = spawn(lovePath, arguments);
 
     loveProcess.on("error", (err) => {
-      log(`Failed to start Love2D: ${err}`);
+      log(`⚠️ Failed to start process: ${err}`);
     });
 
     loveProcess.on("close", (code) => {
-      log(`Love2D process exited with code ${code}`);
+      if (code === 0) {
+        log("Process exited successfully! ❤️");
+      } else {
+        log(`📢 Process exited with code: ${code}`);
+      }
     });
   });
 
