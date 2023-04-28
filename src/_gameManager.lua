@@ -24,6 +24,13 @@ function GameManager.Load()
             options.vsync = true
         end
 
+        Game.WindowWidth = gamemode.WindowWidth or 1200
+        Game.WindowHeight = gamemode.WindowHeight or 720
+        Game.WindowFullscreen = gamemode.WindowFullscreen or false
+        Game.WindowResizable = gamemode.WindowResizable or false
+        Game.VsyncEnabled = gamemode.VsyncEnabled or false
+        Game.BackgroundColor = gamemode.BackgroundColor or color_black
+
         love.window.setMode(gamemode.WindowWidth or 1200, gamemode.WindowHeight or 720, options)
 
         GameManager.CurrentGame.Load()
@@ -36,6 +43,11 @@ function GameManager.Update()
     if GameManager.CurrentGame then
         GameManager.CurrentGame.Update()
     end
+end
+
+function GameManager.Draw()
+    local col = Game.BackgroundColor
+    love.graphics.setBackgroundColor(col.r / 255, col.g / 255, col.b / 255, col.a / 255)
 end
 
 _G.GameManager = GameManager

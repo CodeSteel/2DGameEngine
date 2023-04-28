@@ -3,13 +3,11 @@ const { program } = require("commander");
 const chalk = require("chalk");
 const { spawn } = require("child_process");
 const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config();
 const fs = require("fs");
 
-const lovePath = "C:\\Program Files\\LOVE\\love.exe";
-const enginePath = "F:\\Projects\\Love2D\\2DGameEngine\\src";
-const buildPath = "F:\\Projects\\Love2D\\2DGameEngine\\src\\build";
-
-const log = (log) => console.log(`${chalk.red("[BOOM]")} ${log}`);
+const log = (log) => console.log(`${chalk.red("[SteelEngine]")} ${log}`);
 
 const copyDirectory = (src, dest) => {
   // Create the destination directory if it doesn't exist
@@ -51,6 +49,20 @@ const buildProgram = program
   .action((string, options) => {
     log("Building project...");
 
+    let lovePath;
+    let enginePath;
+    let buildPath;
+
+    if (process.env.NODE_ENV === "production") {
+      lovePath = "C:\\Program Files\\LOVE\\love.exe";
+      enginePath = "C:\\Program Files\\steelengine-1.0";
+      buildPath = "C:\\Program Files\\steelengine-1.0\\build";
+    } else {
+      lovePath = "C:\\Program Files\\LOVE\\love.exe";
+      enginePath = "F:\\Projects\\Love2D\\2DGameEngine\\src";
+      buildPath = "F:\\Projects\\Love2D\\2DGameEngine\\src\\build";
+    }
+
     const gamemodePath = path.resolve(string);
 
     // clear directory first
@@ -69,11 +81,11 @@ const buildProgram = program
     const loveProcess = spawn(lovePath, arguments);
 
     loveProcess.on("error", (err) => {
-      console.error(`Failed to start Love2D: ${err}`);
+      log(`Failed to start Love2D: ${err}`);
     });
 
     loveProcess.on("close", (code) => {
-      console.log(`Love2D process exited with code ${code}`);
+      log(`Love2D process exited with code ${code}`);
     });
   });
 

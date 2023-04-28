@@ -3,6 +3,7 @@ Gamemode.Name = "Example: Getting Started"
 Gamemode.WindowWidth = 1250
 Gamemode.WindowHeight = 720
 Gamemode.WindowResizable = true
+Gamemode.BackgroundColor = color_black
 
 function Gamemode.Load()
     Gamemode.ply = CreateObject(Vector(100, 100))
@@ -11,6 +12,7 @@ function Gamemode.Load()
     Gamemode.ply:SetStyle(DRAW_STYLE_RECT)
     Gamemode.ply:SetupPhys(1, false, 1)
     Gamemode.ply:Spawn()
+    Gamemode.ply.body:setFixedRotation(true)
 end
 
 function Gamemode.Update()
@@ -32,14 +34,16 @@ function Gamemode.Update()
         bullet:SetColor(color_red)
         bullet:SetStyle(DRAW_STYLE_CIRCLE)
         bullet:SetupPhys(100, false, 1)
+        bullet:SetRemoveOnLeaveScreen(true)
         bullet:Spawn()
-
-
-
-
 
         -- apply force
         bullet:ApplyForce(dir.x * 100, dir.y * 100)
+
+        TimerCreate("bullet_" .. bullet.index, 3, 1, function()
+            if (not IsValid(bullet)) then return end
+            bullet:Destroy()
+        end)
     end
 
     local dt = Time.DeltaTime
@@ -59,8 +63,8 @@ function Gamemode.Update()
     Gamemode.ply:ApplyForce(wishDir.x, wishDir.y)
 
     -- clamp player position to window
-    Gamemode.ply.x = math.Clamp(Gamemode.ply.x, 0, GameManager.CurrentGame.WindowWidth - Gamemode.ply.w)
-    Gamemode.ply.y = math.Clamp(Gamemode.ply.y, 0, GameManager.CurrentGame.WindowHeight - Gamemode.ply.h)
+    Gamemode.ply.x = math.Clamp(Gamemode.ply.x, 0, ScrW() - Gamemode.ply.w)
+    Gamemode.ply.y = math.Clamp(Gamemode.ply.y, 0, ScrH() - Gamemode.ply.h)
 end
 
 return Gamemode

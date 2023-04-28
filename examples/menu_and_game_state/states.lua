@@ -12,8 +12,7 @@ function GameState:Enter()
 
     self.enemies = {}
     for i = 1, 20 do
-        local enemy = CreateObject(Vector(math.random(0, GameManager.CurrentGame.WindowWidth),
-            math.random(0, GameManager.CurrentGame.WindowHeight)))
+        local enemy = CreateObject(Vector(math.random(0, ScrW()), math.random(0, ScrH())))
         enemy:SetSize(10, 10)
         enemy:SetColor(color_red)
         enemy:SetStyle(DRAW_STYLE_RECT)
@@ -48,20 +47,21 @@ function GameState:Update()
     for _, enemy in ipairs(self.enemies) do
         enemy:ApplyForce(math.random(-10, 10), math.random(-10, 10))
 
-        enemy.x = math.Clamp(enemy.x, 0, GameManager.CurrentGame.WindowWidth - enemy.w)
-        enemy.y = math.Clamp(enemy.y, 0, GameManager.CurrentGame.WindowHeight - enemy.h)
+        enemy.x = math.Clamp(enemy.x, 0, ScrW() - enemy.w)
+        enemy.y = math.Clamp(enemy.y, 0, ScrH() - enemy.h)
     end
 
     -- add player's velocity
     self.ply:ApplyForce(wishDir.x, wishDir.y)
 
     -- clamp player position to window
-    self.ply.x = math.Clamp(self.ply.x, 0, GameManager.CurrentGame.WindowWidth - self.ply.w)
-    self.ply.y = math.Clamp(self.ply.y, 0, GameManager.CurrentGame.WindowHeight - self.ply.h)
+    self.ply.x = math.Clamp(self.ply.x, 0, ScrW() - self.ply.w)
+    self.ply.y = math.Clamp(self.ply.y, 0, ScrH() - self.ply.h)
 end
 
 function GameState:Draw()
-
+    Draw.SimpleText("FPS: " .. Time.FPS, "UIMedium", ScrW() - 10, 20, color_white,
+        TEXT_ALIGN_RIGHT, 500)
 end
 
 local MenuState = CreateNewState()
@@ -90,20 +90,20 @@ function MenuState:Update()
 end
 
 function MenuState:Draw()
-    color_green:Set()
+    local titleW, titleH = Font.GetTextSize(GameManager.CurrentGame.Name, "UILargeB")
 
-    love.graphics.print(GameManager.CurrentGame.Name, 100, 100)
+    Draw.RoundedBox(10, 70, 85, titleW + 20, titleH, color_green)
+    Draw.SimpleText(GameManager.CurrentGame.Name, "UILargeB", 80, 85, color_black, TEXT_ALIGN_LEFT, 500)
 
     for i, item in ipairs(self.menu) do
-        local x = 100
+        local x = 90
         local y = 150 + (i - 1) * 50
 
-        if i == self.currentSelection then
-            color_red:Set()
-        else
-            color_white:Set()
-        end
-        love.graphics.print(item.label, x, y)
+        local labelW, labelH = Font.GetTextSize(item.label, "UISmall")
+
+        Draw.RoundedBox(6, x - 10, y, labelW + 20, labelH, i == self.currentSelection and color_green or color_black)
+        Draw.SimpleText(item.label, "UISmall", x, y, i == self.currentSelection and color_black or color_white,
+            TEXT_ALIGN_LEFT, 100)
     end
 end
 

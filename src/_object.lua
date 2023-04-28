@@ -1,22 +1,6 @@
 local Object = {}
 Object.__index = Object
 
-function Object:Update()
-    if not self.Active or not self.Spawned then return end
-
-    self.body:setPosition(self.x + self.vX * Time.DeltaTime, self.y + self.vY * Time.DeltaTime)
-    self.x, self.y = self.body:getPosition()
-
-    if not self.isStatic and self.useGravity then
-        local gravityY = 9.81 * self.mass
-        self:ApplyForce(0, gravityY)
-    end
-
-    if self.OnUpdate then
-        self:OnUpdate()
-    end
-end
-
 function Object:ApplyForce(x, y)
     self.vX = self.vX + x
     self.vY = self.vY + y
@@ -43,6 +27,10 @@ function Object:SetRotation(degrees)
     self.body:setAngle(math.rad(degrees))
 end
 
+function Object:SetRemoveOnLeaveScreen(remove)
+    self.removeOnLeaveScreen = remove
+end
+
 function Object:SetupPhys(mass, useGravity, colCategory, ignoreMask)
     colCategory = colCategory or 1
     useGravity = useGravity or false
@@ -60,6 +48,32 @@ function Object:SetupPhys(mass, useGravity, colCategory, ignoreMask)
     self.fixture:setCategory(colCategory)
     if ignoreMask then
         self.fixture:setMask(ignoreMask)
+    end
+end
+
+function Object:Update()
+    if not self.Active or not self.Spawned then return end
+
+    -- update position to physics body
+    self.body:setPosition(self.x + self.vX * Time.DeltaTime, self.y + self.vY * Time.DeltaTime)
+    self.x, self.y = self.body:getPosition()
+
+    -- gravity
+    if not self.isStatic and self.useGravity then
+        local gravityY = 9.81 * self.mass
+        self:ApplyForce(0, gravityY)
+    end
+
+    -- destroy if off screen
+    if (self.removeOnLeaveScreen) then
+        if (self.x < 0 or self.x > ScrW() or self.y < 0 or self.y > ScrH()) then
+            self:Destroy()
+        end
+    end
+
+    -- on update callback
+    if self.OnUpdate then
+        self:OnUpdate()
     end
 end
 
@@ -99,6 +113,8 @@ function Object:Destroy()
     self.Active = false
 
     ObjectManager.Unregister(self)
+
+    print("Destroying " .. self.index)
 end
 
 -- Create a new Object and register it to the ObjectManager

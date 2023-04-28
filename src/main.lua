@@ -5,6 +5,15 @@ _G.love = love
 function love.load()
     math.randomseed(os.time(), os.clock())
 
+    Game.FontLibrary = CreateFontLibrary()
+    Font.CreateFont("UILarge", "assets/SourceSansPro-Regular.ttf", 32)
+    Font.CreateFont("UIMedium", "assets/SourceSansPro-Regular.ttf", 24)
+    Font.CreateFont("UISmall", "assets/SourceSansPro-Regular.ttf", 18)
+
+    Font.CreateFont("UILargeB", "assets/SourceSansPro-Bold.ttf", 32)
+    Font.CreateFont("UIMediumB", "assets/SourceSansPro-Bold.ttf", 24)
+    Font.CreateFont("UISmallB", "assets/SourceSansPro-Bold.ttf", 18)
+
     Game.StateMachine = CreateStateMachine()
     Game.InputManager = CreateInputManager()
     Game.Start()
@@ -52,6 +61,7 @@ end
 
 function love.draw()
     Game.Draw()
+    GameManager.Draw()
     ObjectManager.Draw()
     Game.StateMachine:Draw()
 end
