@@ -23,6 +23,11 @@ function Object:SetStyle(style)
     self.style = style
 end
 
+function Object:SetTexture(texture)
+    self.texture = texture
+    self.quad = love.graphics.newQuad(0, 0, self.w, self.h, texture:getWidth(), texture:getHeight())
+end
+
 function Object:SetRotation(degrees)
     self.body:setAngle(math.rad(degrees))
 end
@@ -81,22 +86,25 @@ function Object:Draw()
     if not self.Active or not self.Spawned then return end
 
     self.color:Set()
-
-    love.graphics.push()
-
-    love.graphics.translate(self.x, self.y)
-    love.graphics.rotate(self.body:getAngle())
-
-    if (self.style == DRAW_STYLE_CIRCLE) then
-        love.graphics.circle(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w)
-    elseif (self.style == DRAW_STYLE_TRI) then
-        love.graphics.polygon(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w, 0, self.w / 2,
-            self.h)
+    if self.texture then
+        love.graphics.draw(self.texture, self.quad, self.x, self.y, self.rotation, 1, 1)
     else
-        love.graphics.rectangle(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w, self.h)
-    end
+        love.graphics.push()
 
-    love.graphics.pop()
+        love.graphics.translate(self.x, self.y)
+        love.graphics.rotate(self.body:getAngle())
+
+        if (self.style == DRAW_STYLE_CIRCLE) then
+            love.graphics.circle(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w)
+        elseif (self.style == DRAW_STYLE_TRI) then
+            love.graphics.polygon(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w, 0, self.w / 2,
+                self.h)
+        else
+            love.graphics.rectangle(self.fillmode == DRAW_FILLMODE_FILL and "fill" or "line", 0, 0, self.w, self.h)
+        end
+
+        love.graphics.pop()
+    end
 end
 
 function Object:Spawn()
@@ -113,8 +121,6 @@ function Object:Destroy()
     self.Active = false
 
     ObjectManager.Unregister(self)
-
-    print("Destroying " .. self.index)
 end
 
 -- Create a new Object and register it to the ObjectManager

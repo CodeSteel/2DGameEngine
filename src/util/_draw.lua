@@ -8,7 +8,7 @@ function Draw.RoundedBox(roundness, x, y, w, h, col)
     love.graphics.arc("fill", x + w - roundness, y + roundness, roundness, 3 * math.pi / 2, 2 * math.pi)
     love.graphics.arc("fill", x + w - roundness, y + h - roundness, roundness, 0, math.pi / 2)
     love.graphics.arc("fill", x + roundness, y + h - roundness, roundness, math.pi / 2, math.pi)
-    -- Draw the connecting rectangles
+
     love.graphics.rectangle("fill", x + roundness, y, w - 2 * roundness, h)
     love.graphics.rectangle("fill", x, y + roundness, w, h - 2 * roundness)
 end
@@ -63,4 +63,8 @@ end
 function _G.ScrH()
     local _, h = love.window.getMode()
     return h
+end
+
+function _G.CreateTexture(path)
+    return love.graphics.newImage(path)
 end
